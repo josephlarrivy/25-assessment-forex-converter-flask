@@ -18,12 +18,16 @@ class BackendApi {
     }
   }
     
-  
-
   static async convert(formData) {
     const data = formData;
     return (
       await this.makeRequest('POST', '/convert', null, data)
+    )
+  }
+
+  static async getSuppotredCurrencies() {
+    return (
+      await this.makeRequest('GET', '/getSupportedCurrencies')
     )
   }
 }

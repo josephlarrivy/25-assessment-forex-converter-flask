@@ -49,6 +49,10 @@ def testing_api():
     
 
 
+@app.route('/getSupportedCurrencies', methods=['GET'])
+def get_supported_currencies():
+    response = Exchange.get_supported_currencies()
+    return jsonify({'data': response['symbols']})
 
 
 
