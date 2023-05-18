@@ -20,10 +20,10 @@ class BackendApi {
     
   
 
-  static async test(formData) {
+  static async convert(formData) {
     const data = formData;
     return (
-      await this.makeRequest('POST', '/test', null, data)
+      await this.makeRequest('POST', '/convert', null, data)
     )
   }
 }

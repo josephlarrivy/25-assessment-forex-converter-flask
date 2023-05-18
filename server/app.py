@@ -14,10 +14,39 @@ CORS(app)
 Exchange = ExchangeApiRequest('https://api.exchangerate.host')
 
 
-@app.route('/test', methods=['POST'])
+@app.route('/convert', methods=['POST'])
 def testing_api():
-    return jsonify({'data':'good request'})
+    data = request.get_json()
+    from_currency = data['from']
+    to_currency = data['to']
+    amount = data['amount']
+    # print(from_currency)
+    # print(to_currency)
+    # print(amount)
+    response = Exchange.exchange(from_currency, to_currency, amount)
+    print(response)
 
+    # print('###########')
+    # print(response['success'])
+    # print(response['query'])
+    # print(response['query']['from'])
+    # print(response['query']['to'])
+    # print(response['query']['amount'])
+    # print(response['info']['rate'])
+    # print(response['result'])
+    # print('###########')
+
+    data = {
+        'success' : True,
+        'from' : response['query']['from'],
+        'to' : response['query']['to'],
+        'amount' : response['query']['amount'],
+        'rate' : response['info']['rate'],
+        'result' : response['result']
+        }
+    return jsonify(data)
+
+    
 
 
 
