@@ -1,36 +1,110 @@
 import React, { useEffect, useState } from "react";
 import BackendApi from "../api/BackendApi";
 
-
-
 const Form = () => {
-
-  const [data, setData] = useState()
+  const [data, setData] = useState([]);
+  const [fromInput, setFromInput] = useState("");
+  const [toInput, setToInput] = useState("");
+  const [amountInput, setAmountInput] = useState("")
+  const [output, setOutput] = useState()
 
   const getCurrencies = async () => {
-    const response = await BackendApi.getSuppotredCurrencies()
-    // console.log(response)
-    let currencies = response.data.data;
-    for (let key in currencies) {
-      let currency = currencies[key];
-      console.log(`Currency Code: ${currency.code}`);
-      console.log(`Currency Description: ${currency.description}`);
+    try {
+      const response = await BackendApi.getSuppotredCurrencies();
+      const currencies = response.data.data;
+      const array = Object.keys(currencies).map((key) => {
+        const currency = currencies[key];
+        return {
+          code: currency.code,
+          name: currency.description
+        };
+      });
+      setData(array);
+    } catch (error) {
+      console.log("Error fetching currencies:", error);
     }
-  }
+  };
+
 
   useEffect(() => {
-    getCurrencies()
-  }, [])
-
-  useEffect(() => {
+    getCurrencies();
     console.log(data)
-  }, [data])
+  }, []);
+
+  const handleFromInputChange = (event) => {
+    setFromInput(event.target.value);
+  };
+
+  const handleToInputChange = (event) => {
+    setToInput(event.target.value);
+  };
+
+  const handleAmountInputChange = (event) => {
+    setAmountInput(event.target.value);
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    console.log(fromInput, toInput, amountInput);
+
+    const response = await BackendApi.convert({
+      'from' : fromInput,
+      'to' : toInput,
+      'amount' : amountInput
+    })
+
+    console.log(response.data)
+    setOutput(response.data)
+
+
+
+  };
 
   return (
     <div>
+      <form onSubmit={handleSubmit}>
+        <label htmlFor="from">From</label>
+        <br></br>
+        <select id="from" value={fromInput} onChange={handleFromInputChange}>
+          <option value="">Select a currency</option>
+          {data.map((currency) => (
+            <option key={currency.code} value={currency.code}>
+              {currency.name}
+            </option>
+          ))}
+        </select>
+        <br></br>
+        <label htmlFor="to">To</label>
+        <br></br>
+        <select id="to" value={toInput} onChange={handleToInputChange}>
+          <option value="">Select a currency</option>
+          {data.map((currency) => (
+            <option key={currency.code} value={currency.code}>
+              {currency.name}
+            </option>
+          ))}
+        </select>
+        <br></br>
+        <label htmlFor="to">Amount</label>
+        <br></br>
+        <input
+          type="number"
+          id="to"
+          value={amountInput}
+          onChange={handleAmountInputChange}
+        />
+        <br></br>
+        <br></br>
+        <button type="submit">Submit</button>
+      </form>
+      {output && 
+        <div id="output">
+          <p>{output.amount} {output.from} = {output.result} {output.to}</p>
 
+        </div>
+      }
     </div>
-  )
-}
+  );
+};
 
 export default Form;
