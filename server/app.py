@@ -2,57 +2,41 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from exchange_rate_api import ExchangeApiRequest
 
-
-#      https://api.exchangerate.host
-#      /convert?from=USD&to=EUR
-
 app = Flask(__name__)
 CORS(app)
-
-# app.config["SECRET_KEY"] = "qwhdu&*UJdwqdqw"
 
 Exchange = ExchangeApiRequest('https://api.exchangerate.host')
 
 
 @app.route('/convert', methods=['POST'])
-def testing_api():
+def convert():
     data = request.get_json()
     from_currency = data['from']
     to_currency = data['to']
     amount = data['amount']
-    # print(from_currency)
-    # print(to_currency)
-    # print(amount)
     response = Exchange.exchange(from_currency, to_currency, amount)
-    print(response)
 
-    # print('###########')
-    # print(response['success'])
-    # print(response['query'])
-    # print(response['query']['from'])
-    # print(response['query']['to'])
-    # print(response['query']['amount'])
-    # print(response['info']['rate'])
-    # print(response['result'])
-    # print('###########')
+    rounded = round(response['result'], 2)
+    formatted_amount = "{:,}".format(response['query']['amount'])
+    formatted_result = "{:,}".format(rounded)
 
     data = {
         'success' : True,
         'from' : response['query']['from'],
         'to' : response['query']['to'],
-        'amount' : response['query']['amount'],
+        'amount' : formatted_amount,
         'rate' : response['info']['rate'],
-        'result' : response['result']
+        'result' : formatted_result
         }
     return jsonify(data)
-
-    
 
 
 @app.route('/getSupportedCurrencies', methods=['GET'])
 def get_supported_currencies():
     response = Exchange.get_supported_currencies()
     return jsonify({'data': response['symbols']})
+
+
 
 
 

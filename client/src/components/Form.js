@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import BackendApi from "../api/BackendApi";
+import '../styles/Form.css'
 
 const Form = () => {
   const [data, setData] = useState([]);
@@ -55,14 +56,16 @@ const Form = () => {
 
     console.log(response.data)
     setOutput(response.data)
-
+    setAmountInput('')
 
 
   };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
+    <div id="main-container">
+      <form onSubmit={handleSubmit} id='form'>
+        <p>Select a 'from' currency, a 'to' currency, and enter and amount.</p>
+        <hr></hr>
         <label htmlFor="from">From</label>
         <br></br>
         <select id="from" value={fromInput} onChange={handleFromInputChange}>
@@ -74,6 +77,7 @@ const Form = () => {
           ))}
         </select>
         <br></br>
+        <br></br>
         <label htmlFor="to">To</label>
         <br></br>
         <select id="to" value={toInput} onChange={handleToInputChange}>
@@ -84,6 +88,7 @@ const Form = () => {
             </option>
           ))}
         </select>
+        <br></br>
         <br></br>
         <label htmlFor="to">Amount</label>
         <br></br>
@@ -97,10 +102,10 @@ const Form = () => {
         <br></br>
         <button type="submit">Submit</button>
       </form>
+      <br></br>
       {output && 
         <div id="output">
           <p>{output.amount} {output.from} = {output.result} {output.to}</p>
-
         </div>
       }
     </div>
