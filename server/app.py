@@ -17,8 +17,8 @@ def convert():
     response = Exchange.exchange(from_currency, to_currency, amount)
 
     rounded = round(response['result'], 2)
-    formatted_amount = "{:,}".format(response['query']['amount'])
     formatted_result = "{:,}".format(rounded)
+    formatted_amount = "{:,}".format(response['query']['amount'])
 
     data = {
         'success' : True,
